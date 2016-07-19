@@ -1574,7 +1574,6 @@ class Flow(Node, NodeContainer, MSONable):
         Build dirs and file of the `Flow` and save the object in pickle format.
         Returns 0 if success
 
-
         Args:
             abivalidate: If True, all the input files are validate by calling
                 the abinit parser. If the validation fails, ValueError is raise.

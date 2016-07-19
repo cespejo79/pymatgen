@@ -302,6 +302,10 @@ class Pseudo(six.with_metaclass(abc.ABCMeta, MSONable, object)):
         #if os.path.exists(path): return path
         #return None
 
+    #@property
+    #def dojo_report(self):
+    #    pseudo.dojo_report = DojoReport.from_file(pseudo.djrepo_path)
+
     def hint_for_accuracy(self, accuracy="normal"):
         """
         Returns a :class:`Hint` object with the suggensted value of ecut [Ha] and

@@ -957,33 +957,29 @@ class G0W0Work(Work):
         """
         super(G0W0Work, self).__init__(workdir=workdir, manager=manager)
 
-        if isinstance(sigma_inputs, list) and isinstance(scr_inputs, list) and len(sigma_inputs) == len(scr_inputs):
-            spread_scr = True
-        else:
-            spread_scr = False
+        spread_scr = (isinstance(sigma_inputs, (list, tuple)) and
+                      isinstance(scr_inputs, (list, tuple)) and
+                      len(sigma_inputs) == len(scr_inputs))
 
         self.sigma_tasks = []
 
         # Register the GS-SCF run.
         # register all scf_inputs but link the nscf only the last scf in the list
         # multiple scf_inputs can be provided to perform convergence studies
-
-        if isinstance(scf_inputs, list):
+        if isinstance(scf_inputs, (list, tuple)):
             for scf_input in scf_inputs:
                 self.scf_task = self.register_scf_task(scf_input)
         else:
             self.scf_task = self.register_scf_task(scf_inputs)
 
         # Register the NSCF run (s).
-
-        if isinstance(nscf_inputs, list):
+        if isinstance(nscf_inputs, (list, tuple)):
             for nscf_input in nscf_inputs:
                 self.nscf_task = nscf_task = self.register_nscf_task(nscf_input, deps={self.scf_task: "DEN"})
         else:
             self.nscf_task = nscf_task = self.register_nscf_task(nscf_inputs, deps={self.scf_task: "DEN"})
 
         # Register the SCR and SIGMA run(s).
-
         if spread_scr:
             for scr_input, sigma_input in zip(scr_inputs, sigma_inputs):
                 scr_task = self.register_scr_task(scr_input, deps={nscf_task: "WFK"})
@@ -991,9 +987,8 @@ class G0W0Work(Work):
                 self.sigma_tasks.append(sigma_task)
         else:
             scr_task = self.register_scr_task(scr_inputs, deps={nscf_task: "WFK"})
-            for sigma_input in sigma_inputs:
-                task = self.register_sigma_task(sigma_input, deps={nscf_task: "WFK", scr_task: "SCR"})
-                self.sigma_tasks.append(task)
+            task = self.register_sigma_task(sigma_inputs, deps={nscf_task: "WFK", scr_task: "SCR"})
+            self.sigma_tasks.append(task)
 
 
 class SigmaConvWork(Work):
