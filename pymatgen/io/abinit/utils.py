@@ -215,6 +215,16 @@ class Directory(object):
         """Recursively delete the directory tree"""
         shutil.rmtree(self.path, ignore_errors=True)
 
+    def copytree(self, dst, **kwargs):
+        """
+        Use shutil.copy_tree to copy the entire directory tree to a new location dst.
+        dst must be directory name. If dst does not exist, it is created with mkpath().
+        kwargs are passed to `shutil.copytree`
+        Return the list of files that were copied or might have been copied,
+        """
+        # FIXME: copytree should accept an option to accept existing directories.
+        return shutil.copytree(self.path, dst, **kwargs)
+
     def clean(self):
         """Remove all files in the directory tree while preserving the directory"""
         for path in self.list_filepaths():

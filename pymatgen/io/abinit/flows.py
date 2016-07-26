@@ -1853,7 +1853,7 @@ class Flow(Node, NodeContainer, MSONable):
         Return 0 if success
         """
         if self.finalized:
-            self.history.warning("Calling finalize on an alrady finalized flow.")
+            self.history.warning("Calling finalize on an already finalized flow.")
             return 1
 
         self.history.warning("Calling flow.finalize.")
