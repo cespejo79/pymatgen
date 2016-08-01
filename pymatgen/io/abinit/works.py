@@ -510,8 +510,15 @@ class Work(BaseWork, NodeContainer):
 
             if not hasattr(task, "manager"):
                 # Set the manager
-                # Use the one provided in input else the one of the work.
-                task.set_manager(manager) if manager is not None else task.set_manager(self.manager)
+                # Use the one provided in input else the one of the work/flow.
+                if manager is not None:
+                    task.set_manager(manager)
+                else:
+                    # Look first in work and then in the flow.
+                    if hasattr(self, "manager"):
+                        task.set_manager(self.manager)
+                    else:
+                        task.set_manager(self.flow.manager)
 
             task_workdir = os.path.join(self.workdir, "t" + str(i))
 
@@ -1427,7 +1434,6 @@ class BecWork(Work, MergeDdb):
         """
         # Merge DDB files.
         out_ddb = self.merge_ddb_files()
-
         results = self.Results(node=self, returncode=0, message="DDB merge done")
         results.register_gridfs_files(DDB=(out_ddb, "t"))
 

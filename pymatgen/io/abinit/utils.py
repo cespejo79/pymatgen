@@ -216,7 +216,7 @@ class Directory(object):
         """Recursively delete the directory tree"""
         shutil.rmtree(self.path, ignore_errors=True)
 
-    def copy_r(self, dst)
+    def copy_r(self, dst):
         """
         Implements a recursive copy function similar to Unix's "cp -r" command.
         """

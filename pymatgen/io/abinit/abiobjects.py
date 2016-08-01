@@ -429,7 +429,6 @@ class Electrons(AbivarAble, MSONable):
         self.comment = comment
         self.smearing = Smearing.as_smearing(smearing)
         self.spin_mode = SpinMode.as_spinmode(spin_mode)
-
         self.nband = nband
         self.fband = fband
         self.charge = charge

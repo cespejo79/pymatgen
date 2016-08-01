@@ -1856,8 +1856,8 @@ class Flow(Node, NodeContainer, MSONable):
             self.history.warning("Calling finalize on an already finalized flow.")
             return 1
 
-        self.history.warning("Calling flow.finalize.")
-        self.finalized = False
+        self.history.info("Calling flow.finalize.")
+        self.finalized = True
 
         if self.has_db:
             self.history.info("Saving results in database.")
@@ -2523,12 +2523,11 @@ class PhononFlow(Flow):
 
         mrgddb = wrappers.Mrgddb(manager=self.manager, verbose=0)
         mrgddb.merge(self.outdir.path, ddb_files, out_ddb=out_ddb, description=desc)
-
         print("Final DDB file available at %s" % out_ddb)
 
         # Call the method of the super class.
         retcode = super(PhononFlow, self).finalize()
-        print("retcode", retcode)
+        #print("retcode", retcode)
         #if retcode != 0: return retcode
         return retcode
 
