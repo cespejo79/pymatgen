@@ -780,6 +780,7 @@ batch_adapter:
                 possible_pconfs = [pc for pc in pconfs if qad.can_run_pconf(pc)]
 
                 if qad.allocation == "nodes":
+                #if qad.allocation in ["nodes", "force_nodes"]:
                     # Select the configuration divisible by nodes if possible.
                     for pconf in possible_pconfs:
                         if pconf.num_cores % qad.hw.cores_per_node == 0:
