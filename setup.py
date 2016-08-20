@@ -19,8 +19,6 @@ except ImportError:
 
 SETUP_PTH = os.path.dirname(__file__)
 
-
-
 extra_link_args = []
 if sys.platform.startswith('win') and platform.machine().endswith('64'):
     extra_link_args.append('-Wl,--allow-multiple-definition')
@@ -45,8 +43,7 @@ setup(
                     "chemenv": ["unittest2"]},
     package_data={"pymatgen.core": ["*.json"],
                   "pymatgen.analysis": ["*.yaml", "*.csv"],
-                  "pymatgen.analysis.chemenv.coordination_environments.coordination_geometries_files": ["*.txt",
-                                                                                                        "*.json"],
+                  "pymatgen.analysis.chemenv.coordination_environments.coordination_geometries_files": ["*.txt", "*.json"],
                   "pymatgen.analysis.chemenv.coordination_environments.strategy_files": ["*.json"],
                   "pymatgen.io.vasp": ["*.yaml"],
                   "pymatgen.io.feff": ["*.yaml"],
@@ -95,5 +92,17 @@ setup(
                            ["pymatgen/util/coord_utils_cython.c"],
                            include_dirs=get_numpy_include_dirs(),
                            extra_link_args=extra_link_args)],
+    entry_points={
+          'console_scripts': [
+              'pmg = pymatgen.cli.pmg:main',
+              'feff_input_generation = pymatgen.cli.feff_input_generation:main',
+              'feff_plot_cross_section = pymatgen.cli.feff_plot_cross_section:main',
+              'feff_plot_dos = pymatgen.cli.feff_plot_dos:main',
+              'gaussian_analyzer = pymatgen.cli.gaussian_analyzer:main',
+              'gen_potcar = pymatgen.cli.gen_potcar:main',
+              'get_environment = pymatgen.cli.get_environment:main',
+              'pydii = pymatgen.cli.pydii:main',
+          ]
+    },
     scripts=glob.glob(os.path.join(SETUP_PTH, "scripts", "*"))
 )
