@@ -450,10 +450,10 @@ class BSPlotter(object):
             # band with one spline rather than fitting with piecewise splines
             # (splines are ill-suited to fit discontinuities).
             #
-            # The number of splines used to fit a band is determined by the 
-            # number of branches (high symmetry lines) defined in the 
-            # BandStructureSymmLine object (see BandStructureSymmLine._branches). 
-            
+            # The number of splines used to fit a band is determined by the
+            # number of branches (high symmetry lines) defined in the
+            # BandStructureSymmLine object (see BandStructureSymmLine._branches).
+
             warning = "WARNING! Distance / branch {d}, band {i} cannot be "+\
                       "interpolated.\n"+\
                       "See full warning in source.\n"+\
@@ -470,13 +470,13 @@ class BSPlotter(object):
                     step = (data['distances'][d][-1]
                             - data['distances'][d][0]) / 1000
 
-                    xs = [x * step + data['distances'][d][0] 
+                    xs = [x * step + data['distances'][d][0]
                           for x in range(1000)]
 
                     ys = [scint.splev(x * step + data['distances'][d][0],
                                       tck, der=0)
                           for x in range(1000)]
-                    
+
                     for y in ys:
                         if np.isnan(y):
                             print(warning.format(d=str(d),i=str(i),
@@ -550,17 +550,17 @@ class BSPlotter(object):
                                     s=100)
                     for vbm in data['vbm']:
                         plt.scatter(vbm[0], vbm[1], color='g', marker='o',
-                                    s=100)	
+                                    s=100)
                 plt.ylim(data['vbm'][0][1] + e_min,
                          data['cbm'][0][1] + e_max)
         else:
             plt.ylim(ylim)
-           
+
         plt.tight_layout()
 
         return plt
 
-    def show(self, zero_to_efermi=True, ylim=None, smooth=False, 
+    def show(self, zero_to_efermi=True, ylim=None, smooth=False,
              smooth_tol=None):
         """
         Show the plot using matplotlib.
@@ -1481,7 +1481,7 @@ def plot_points(points, lattice=None, coords_are_cartesian=False, fold=False, ax
 
 
 @add_fig_kwargs
-def plot_brillouin_zone_from_kpath(kpath, **kwargs):
+def plot_brillouin_zone_from_kpath(kpath, ax=None, **kwargs):
 
     """
     Gives the plot (as a matplotlib object) of the symmetry line path in
@@ -1489,15 +1489,16 @@ def plot_brillouin_zone_from_kpath(kpath, **kwargs):
 
     Args:
         kpath (HighSymmKpath): a HighSymmKPath object
+        ax: matplotlib :class:`Axes` or None if a new figure should be created.
         **kwargs: provided by add_fig_kwargs decorator
 
     Returns:
-        a matplotlib figure and matplotlib_ax
+        matplotlib figure
 
     """
     lines = [[kpath.kpath['kpoints'][k] for k in p]
              for p in kpath.kpath['path']]
-    return plot_brillouin_zone(bz_lattice=kpath.prim_rec, lines=lines,
+    return plot_brillouin_zone(bz_lattice=kpath.prim_rec, lines=lines, ax=ax,
                                labels=kpath.kpath['kpoints'], **kwargs)
 
 
@@ -1559,7 +1560,7 @@ def plot_ellipsoid(hessian, center, lattice=None, rescale=1.0, ax=None, coords_a
     Plots a 3D ellipsoid rappresenting the Hessian matrix in input.
     Useful to get a graphical visualization of the effective mass
     of a band in a single k-point.
-    
+
     Args:
         hessian: the Hessian matrix
         center: the center of the ellipsoid in reciprocal coords (Default)
@@ -1576,10 +1577,10 @@ def plot_ellipsoid(hessian, center, lattice=None, rescale=1.0, ax=None, coords_a
         fig,ax=plot_wigner_seitz(struct.reciprocal_lattice)
         plot_ellipsoid(hessian,[0.0,0.0,0.0], struct.reciprocal_lattice,ax=ax)
     """
-    
+
     if (not coords_are_cartesian) and lattice is None:
         raise ValueError("coords_are_cartesian False or fold True require the lattice")
-    
+
     if not coords_are_cartesian:
         center = lattice.get_cartesian_coords(center)
 
@@ -1596,11 +1597,11 @@ def plot_ellipsoid(hessian, center, lattice=None, rescale=1.0, ax=None, coords_a
     # find the rotation matrix and radii of the axes
     U, s, rotation = np.linalg.svd(hessian)
     radii = 1.0/np.sqrt(s)
-    
+
     # from polar coordinates
     u = np.linspace(0.0, 2.0 * np.pi, 100)
     v = np.linspace(0.0, np.pi, 100)
-    x = radii[0] * np.outer(np.cos(u), np.sin(v)) 
+    x = radii[0] * np.outer(np.cos(u), np.sin(v))
     y = radii[1] * np.outer(np.sin(u), np.sin(v))
     z = radii[2] * np.outer(np.ones_like(u), np.cos(v))
     for i in range(len(x)):
