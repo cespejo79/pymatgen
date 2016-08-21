@@ -951,14 +951,14 @@ class G0W0Work(Work):
                  workdir=None, manager=None):
         """
         Args:
-            scf_inputs: Input for the SCF run, if it is a list add all but only link
+            scf_inputs: Input(s) for the SCF run, if it is a list add all but only link
                 to the last input (used for convergence studies on the KS band gap)
-            nscf_inputs: Input for the NSCF run, if it is a list add all but only
+            nscf_inputs: Input(s) for the NSCF run, if it is a list add all but only
                 link to the last (i.e. addditiona DOS and BANDS)
             scr_inputs: Input for the screening run
             sigma_inputs: List of :class:AbinitInput`for the self-energy run.
-                if scr and sigma are lists of the same length every sigma gets it's own screening
-                if there is only one screening all sigma's link to this one
+                if scr and sigma are lists of the same length, every sigma gets its own screening.
+                if there is only one screening all sigma inputs are linked to this one
             workdir: Working directory of the calculation.
             manager: :class:`TaskManager` object.
         """
@@ -967,6 +967,7 @@ class G0W0Work(Work):
         spread_scr = (isinstance(sigma_inputs, (list, tuple)) and
                       isinstance(scr_inputs, (list, tuple)) and
                       len(sigma_inputs) == len(scr_inputs))
+        #print("spread_scr", spread_scr)
 
         self.sigma_tasks = []
 
@@ -993,9 +994,15 @@ class G0W0Work(Work):
                 sigma_task = self.register_sigma_task(sigma_input, deps={nscf_task: "WFK", scr_task: "SCR"})
                 self.sigma_tasks.append(sigma_task)
         else:
+            # Sigma work(s) connected to the same screening.
             scr_task = self.register_scr_task(scr_inputs, deps={nscf_task: "WFK"})
-            task = self.register_sigma_task(sigma_inputs, deps={nscf_task: "WFK", scr_task: "SCR"})
-            self.sigma_tasks.append(task)
+            if isinstance(sigma_inputs, (list, tuple)):
+                for inp in sigma_inputs:
+                    task = self.register_sigma_task(inp, deps={nscf_task: "WFK", scr_task: "SCR"})
+                    self.sigma_tasks.append(task)
+            else:
+                task = self.register_sigma_task(sigma_inputs, deps={nscf_task: "WFK", scr_task: "SCR"})
+                self.sigma_tasks.append(task)
 
 
 class SigmaConvWork(Work):
